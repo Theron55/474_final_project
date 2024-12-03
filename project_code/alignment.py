@@ -86,13 +86,16 @@ def blast_search(sequence, constraint):
                 return None
 
             for alignment in record.alignments[:20]:  # Top 20 alignments
+                
                 for hsp in alignment.hsps:
-                    alignments_data.append([
-                        alignment.title,
-                        hsp.score,
-                        hsp.expect,
-                        (hsp.identities / hsp.align_length) * 100
-                    ])
+                    aligned_sequence = hsp.sbjct.replace("-", " ")
+                    if constraint in aligned_sequence:
+                        alignments_data.append([
+                            alignment.title,
+                            hsp.score,
+                            hsp.expect,
+                            (hsp.identities / hsp.align_length) * 100
+                        ])
 
         # Save results to CSV
         if alignments_data:
@@ -111,6 +114,7 @@ def blast_search(sequence, constraint):
 # Main Workflow
 sequence = input("Enter a single sequence (minimum 25 amino acids): ").strip()
 constraint = input("Enter a motif (constraint) present in the sequence: ").strip()
+   
 
 # Run BLAST search and save top 20 results
 top_20_df = blast_search(sequence, constraint)
